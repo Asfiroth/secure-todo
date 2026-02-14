@@ -1,0 +1,12 @@
+<Project>
+    <PropertyGroup>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
+</Project>

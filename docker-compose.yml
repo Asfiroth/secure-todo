@@ -1,0 +1,25 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: sqlserver
+    restart: always
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: P@ssw0rd123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver:/var/opt/mssql
+    networks:
+      - todo-network
+
+
+
+volumes:
+  sqlserver:
+      driver: local
+
+networks:
+  todo-network:
+    driver: bridge
+

@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\SecureTodo.Domain\SecureTodo.Domain.csproj" />
+  </ItemGroup>
+</Project>
