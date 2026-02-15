@@ -7,30 +7,30 @@ WORKDIR /src
 COPY . .
 
 # Restore dependencies
-RUN dotnet restore Api.Core/Api.Core.csproj -a $TARGETARCH
+RUN dotnet restore SecureTodo.Api/SecureTodo.Api.csproj -a $TARGETARCH
 
 # Build the project
-RUN dotnet build Api.Core/Api.Core.csproj -c Release -a $TARGETARCH --no-restore 
+RUN dotnet build SecureTodo.Api/SecureTodo.Api.csproj -c Release -a $TARGETARCH --no-restore 
 
 # Publish the project
-RUN dotnet publish Api.Core/Api.Core.csproj -c Release -a $TARGETARCH --no-restore --no-build --self-contained false -o /app/publish
+RUN dotnet publish SecureTodo.Api/SecureTodo.Api.csproj -c Release -a $TARGETARCH --no-restore --no-build --self-contained false -o /app/publish
 
 # Use a lightweight runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-noble AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
 # Create custom user and group
-RUN groupadd -r atena_group && useradd --no-log-init -r -g atena_group atena_user 
+RUN groupadd -r todo_group && useradd --no-log-init -r -g todo_group todo_user 
 
 # Give control to the app folder so it can execute api
-RUN chown -R atena_user:atena_group /app
+RUN chown -R todo_user:todo_group /app
 
 # Use new created user 
-USER atena_user
+USER todo_user
 
 # Expose the port the app runs on
 EXPOSE 8080
 
 # Set the entry point
-ENTRYPOINT ["dotnet", "Api.Core.dll"]
+ENTRYPOINT ["dotnet", "SecureTodo.Api.dll"]

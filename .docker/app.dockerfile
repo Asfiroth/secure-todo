@@ -15,13 +15,13 @@ COPY --from=build /app/dist /usr/share/nginx/html
 COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Create custom user and group
-RUN groupadd -r atena_group && useradd --no-log-init -r -g atena_group atena_user 
+RUN groupadd -r todo_group && useradd --no-log-init -r -g todo_group todo_user 
 
 # Give control to the app folder so it can execute api
-RUN chown -R atena_user:atena_group /app
+RUN chown -R todo_user:todo_group /app
 
 # Use new created user 
-USER atena_user
+USER todo_user
 
 EXPOSE 8080
 

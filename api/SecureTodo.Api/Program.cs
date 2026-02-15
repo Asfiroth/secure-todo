@@ -1,41 +1,72 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.Text.Json.Serialization;
+using SecureTodo.Api.Extensions;
+using SecureTodo.Api.Services;
+using SecureTodo.Application.Extensions;
+using SecureTodo.Application.Services;
+using SecureTodo.Infrastructure.Extensions;
+using Serilog;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+var logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .CreateLogger();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
+    var builder = WebApplication.CreateBuilder(args);
+    
+    builder.Host.UseSerilog((context, configuration) => 
+        configuration.ReadFrom.Configuration(context.Configuration));
+
+    builder.Services.AddOpenApi();
+    builder.Services.AddHttpContextAccessor();
+
+    // Cross cutting services.
+    builder.Services.AddTransient<IAuthService, AuthService>();
+
+    builder.Services.AddMediator(options => 
+        options.ServiceLifetime = ServiceLifetime.Scoped);
+    
+    builder.Services.AddApplicationServices();
+    
+    builder.Services.AddDatabase(builder.Configuration);
+    builder.Services.AddRepositories();
+    
+    builder.Services.AddEndpoints(typeof(Program).Assembly);
+    
+    builder.Services.ConfigureHttpJsonOptions(options =>
+    {
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+    builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseEndpoints();
+
+    app.Run();
+
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    logger.Fatal(ex, "SecureTodo.Api terminated unexpectedly");
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
 }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+namespace SecureTodo.Api
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public partial class Program; // Handler for testing purposes
 }

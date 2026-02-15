@@ -1,0 +1,39 @@
+using Ardalis.Result.AspNetCore;
+using Mediator;
+using SecureTodo.Application.Tasks.Create;
+using SecureTodo.Domain.Task.Enums;
+
+namespace SecureTodo.Api.Endpoints.Tasks;
+
+public record CreateTaskRequest(string Title, string? Description, TaskPriority Priority, DateOnly DueDate);
+
+public sealed class Create : IEndpoint
+{
+    public void MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder
+            .MapPost(RouteNames.Tasks.Create, Handler)
+            .WithTags(RouteNames.Tasks.Tag);
+    }
+    
+    private async Task<IResult> Handler(CreateTaskRequest request, IMediator mediator, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new CreateTaskCommand(
+            Title: request.Title,
+            Description: request.Description,
+            Priority: request.Priority,
+            DueDate: request.DueDate
+        ), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.CreatedAtRoute(
+                result.Value,
+                routeName: nameof(GetById),
+                routeValues: new { id = result.Value.Id }
+                );
+        }
+
+        return result.ToMinimalApiResult();
+    }
+}

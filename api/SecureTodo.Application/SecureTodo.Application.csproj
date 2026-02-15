@@ -2,4 +2,18 @@
   <ItemGroup>
     <ProjectReference Include="..\SecureTodo.Domain\SecureTodo.Domain.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="Ardalis.Result.FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Mediator.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="TransferObjects\" />
+    <Folder Include="UseCases\" />
+  </ItemGroup>
 </Project>
