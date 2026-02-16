@@ -1,0 +1,12 @@
+@reference '../../app.css'
+.authorized-layout {
+  @apply flex min-h-screen flex-row items-stretch py-6 pl-6;
+}
+
+.header-container {
+  @apply flex flex-row items-center justify-items-stretch pr-6;
+}
+
+.page-content {
+  @apply w-full flex-1 overflow-x-auto overflow-y-auto py-6 pr-6;
+}

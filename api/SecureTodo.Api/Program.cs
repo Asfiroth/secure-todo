@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using SecureTodo.Api.Extensions;
 using SecureTodo.Api.Services;
 using SecureTodo.Application.Extensions;
@@ -23,15 +25,12 @@ try
 
     // Cross cutting services.
     builder.Services.AddTransient<IAuthService, AuthService>();
-
     builder.Services.AddMediator(options => 
         options.ServiceLifetime = ServiceLifetime.Scoped);
     
     builder.Services.AddApplicationServices();
-    
     builder.Services.AddDatabase(builder.Configuration);
     builder.Services.AddRepositories();
-    
     builder.Services.AddEndpoints(typeof(Program).Assembly);
     
     builder.Services.ConfigureHttpJsonOptions(options =>
@@ -42,16 +41,52 @@ try
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+    
+    builder.Services
+        .AddAuthorization()
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.Authority = builder.Configuration["Identity:Authority"];
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Identity:Issuer"],
+                ValidAudiences = builder.Configuration["Identity:Audiences"]!.Split(",", StringSplitOptions.RemoveEmptyEntries),
+                ValidateLifetime = true,
+            };
+            options.MapInboundClaims = true;
+        });
+    
+    const string corsPolicyName = "CorsPolicy";
+    var crossOrigins = builder.Configuration.GetSection("CrossOrigins").Get<string>();
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: corsPolicyName,
+            policy =>
+            {
+                policy.WithOrigins(crossOrigins!.Split(",", StringSplitOptions.RemoveEmptyEntries))
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+    });
+    
 
     var app = builder.Build();
-
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
     }
+    
+    app.UseCors(corsPolicyName);
 
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.UseHttpsRedirection();
-
     app.UseEndpoints();
 
     app.Run();

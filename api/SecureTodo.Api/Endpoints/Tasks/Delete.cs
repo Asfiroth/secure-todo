@@ -1,6 +1,6 @@
 using Ardalis.Result.AspNetCore;
 using Mediator;
-using SecureTodo.Application.Tasks.Delete;
+using SecureTodo.Application.UseCases.Tasks.Delete;
 
 namespace SecureTodo.Api.Endpoints.Tasks;
 
@@ -9,11 +9,11 @@ public sealed class Delete : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder
-            .MapDelete(RouteNames.Tasks.Delete, Handler)
+            .MapDelete(RouteNames.Tasks.Delete, HandleAsync)
             .WithTags(RouteNames.Tasks.Tag);
     }
     
-    private async Task<IResult> Handler(Guid id, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> HandleAsync(Guid id, IMediator mediator, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new DeleteTaskCommand(id), cancellationToken);
 

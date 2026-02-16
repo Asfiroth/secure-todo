@@ -13,13 +13,65 @@ services:
     networks:
       - todo-network
 
+  postgres:
+    image: postgres:17-bookworm
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - todo-network
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.5
+    container_name: keycloak
+    restart: always
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      # Admin user credentials (for accessing admin console)
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      
+      # Database configuration
+      KC_DB: postgres
+      # KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      # KC_DB_USERNAME: keycloak
+      # KC_DB_PASSWORD: keycloak_password
+      KC_DB_URL: jdbc:postgresql://postgresql.internal.home/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: P@ssw0rd123
+      
+      # Development settings
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      
+      # Logging
+      KC_LOG_LEVEL: info
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./keycloak/import:/opt/keycloak/data/import
+    # depends_on: [postgres]
+    networks:
+      - todo-network
 
 volumes:
   sqlserver:
-      driver: local
+    driver: local
+  postgres:
+    driver: local
 
 networks:
   todo-network:
     driver: bridge
-

@@ -1,6 +1,6 @@
 using Ardalis.Result.AspNetCore;
 using Mediator;
-using SecureTodo.Application.Tasks.Create;
+using SecureTodo.Application.UseCases.Tasks.Create;
 using SecureTodo.Domain.Task.Enums;
 
 namespace SecureTodo.Api.Endpoints.Tasks;
@@ -12,11 +12,11 @@ public sealed class Create : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder
-            .MapPost(RouteNames.Tasks.Create, Handler)
+            .MapPost(RouteNames.Tasks.Create, HandleAsync)
             .WithTags(RouteNames.Tasks.Tag);
     }
     
-    private async Task<IResult> Handler(CreateTaskRequest request, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> HandleAsync(CreateTaskRequest request, IMediator mediator, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new CreateTaskCommand(
             Title: request.Title,

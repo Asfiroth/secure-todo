@@ -28,14 +28,15 @@ internal sealed class TaskItemQueryService : ITaskItemQueryService
             query = query.Where(item => item.Priority == filter.Priority);
         }
 
-        if (string.IsNullOrWhiteSpace(filter.Cursor))
+        if (!string.IsNullOrWhiteSpace(filter.Cursor))
         {
             query = query.Where(item => item.Id.Value < Guid.Parse(filter.Cursor));
         }
         
         query = query
+            .Where(item => EF.Property<Guid>(item, "CreatedBy") == filter.UserId)
             .OrderByDescending(item => item.DueDate)
-            .Take(filter.PageSize);
+            .Take(filter.PageSize + 1);
         
         var result = await query.Select(item => 
             new TaskItemDto(
@@ -46,7 +47,14 @@ internal sealed class TaskItemQueryService : ITaskItemQueryService
                 item.DueDate)
         ).ToListAsync(cancellationToken);
 
-        return new PagedList<TaskItemDto>(result, result.Last().Id.ToString());
+        var cursor = "";
+        if (result.Count > filter.PageSize)
+        {
+            result.RemoveAt(result.Count - 1);
+            cursor = result.Last().Id.ToString();
+        }
+
+        return new PagedList<TaskItemDto>(result, cursor);
     }
 
     public async ValueTask<TaskItemDto?> GetById(TaskItemId taskId, CancellationToken cancellationToken = default)

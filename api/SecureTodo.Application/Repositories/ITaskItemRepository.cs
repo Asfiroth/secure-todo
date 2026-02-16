@@ -9,5 +9,4 @@ public interface ITaskItemRepository
     ValueTask AddAsync(TaskItem taskItem, CancellationToken cancellationToken = default);
     ValueTask UpdateAsync(TaskItem taskItem, CancellationToken cancellationToken = default);
     ValueTask DeleteAsync(TaskItem taskItem, CancellationToken cancellationToken = default);
-    
 }

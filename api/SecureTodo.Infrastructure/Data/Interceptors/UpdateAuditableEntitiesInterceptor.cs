@@ -28,8 +28,7 @@ public sealed class UpdateAuditableEntitiesInterceptor : SaveChangesInterceptor
 
         if (userId is null)
         {
-            //throw new UnauthorizedAccessException("User is not authenticated.");
-            userId = Guid.Empty;
+            throw new UnauthorizedAccessException("User is not authenticated.");
         }
         
         var entries = dbContext.ChangeTracker.Entries<Auditable>();

@@ -9,12 +9,12 @@ public record PagedList<T>(
 
 public record TaskItemDto(Guid Id, string Title, string? Description, TaskPriority Priority, DateOnly DueDate);
 
-
 public record PagingFilter(
     string? Filter, 
     TaskPriority? Priority, 
     string Cursor, 
-    int PageSize);
+    int PageSize,
+    Guid UserId);
 
 public interface ITaskItemQueryService
 {
