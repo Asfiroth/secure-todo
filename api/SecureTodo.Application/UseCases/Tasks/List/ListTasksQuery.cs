@@ -7,7 +7,7 @@ namespace SecureTodo.Application.UseCases.Tasks.List;
 
 public sealed record ListTasksQuery(
     string? SearchTerm,
-    TaskPriority? Priority,
+    bool IsCompleted,
     int PageSize,
     string Cursor,
     Guid UserId

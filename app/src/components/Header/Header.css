@@ -1,0 +1,15 @@
+@reference "../../app.css";
+
+.welcome-message {
+    @apply text-white w-full text-end text-2xl mt-3;
+
+    span {
+        @apply font-bold pr-5 ;
+    }
+
+
+}
+
+.logout {
+    @apply flex align-middle cursor-pointer bg-blue-950 rounded-lg flex-row px-4 py-1.5 gap-2 mt-3 mr-4;
+}

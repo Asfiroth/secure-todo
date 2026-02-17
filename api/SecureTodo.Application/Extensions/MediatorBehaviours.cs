@@ -98,9 +98,9 @@ public class ValidationBehaviour<TRequest, TResponse>
 {
 	private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-	public ValidationBehaviour()
+	public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
 	{
-		_validators = [];
+		_validators = validators;
 	}
 
 	public async ValueTask<TResponse> Handle(TRequest message, MessageHandlerDelegate<TRequest, TResponse> next, CancellationToken cancellationToken)

@@ -1,3 +1,13 @@
-.sign-in {
-  @apply flex flex-row justify-center gap-4;
+@reference "../../../../app.css";
+
+.login-container {
+  @apply flex flex-col mx-6 w-full lg:mx-0 items-center justify-center h-screen gap-3;
+
+  .intro-message {
+    @apply text-3xl text-center leading-9 italic;
+  }
+
+  .login-button {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer;
+  }
 }

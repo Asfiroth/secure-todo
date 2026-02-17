@@ -1,0 +1,5 @@
+@reference "../../app.css";
+
+.error-message {
+    @apply text-red-500 text-xs;
+}

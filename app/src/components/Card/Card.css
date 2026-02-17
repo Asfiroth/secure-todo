@@ -1,0 +1,13 @@
+@reference "../../app.css";
+
+.card {
+  @apply m-3 rounded-lg border border-gray-300 bg-gray-950 p-4;
+
+  .title {
+    @apply text-base font-black;
+  }
+
+  .content {
+    @apply flex flex-1 flex-col gap-2.5;
+  }
+}

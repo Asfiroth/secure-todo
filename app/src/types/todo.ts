@@ -3,11 +3,19 @@ export type Todo = {
   title: string;
   description?: string;
   priority: string;
-  dueDate: Date;
-  completed: boolean;
+  dueDate: string;
+  isCompleted: boolean;
 };
 
 export type Paged<T> = {
   items: T[];
   cursor: string;
+};
+
+
+export interface TodoFilter {
+  searchTerm?: string;
+  isCompleted: boolean;
+  pageSize: number;
+  cursor?: string;
 };

@@ -1,2 +1,5 @@
+@reference '../../app.css'
+
 .guest-layout {
+    @apply flex flex-row justify-center h-screen gap-4;
 }

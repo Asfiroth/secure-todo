@@ -23,19 +23,15 @@ internal sealed class TaskItemQueryService : ITaskItemQueryService
             query = query.Where(item => item.Title.Contains(filter.Filter) || (item.Description != null && item.Description.Contains(filter.Filter)));
         }
 
-        if (filter.Priority is not null)
-        {
-            query = query.Where(item => item.Priority == filter.Priority);
-        }
-
         if (!string.IsNullOrWhiteSpace(filter.Cursor))
         {
             query = query.Where(item => item.Id.Value < Guid.Parse(filter.Cursor));
         }
         
         query = query
+            .Where(item => item.IsCompleted == filter.IsCompleted)
             .Where(item => EF.Property<Guid>(item, "CreatedBy") == filter.UserId)
-            .OrderByDescending(item => item.DueDate)
+            .OrderBy(item => item.Priority)
             .Take(filter.PageSize + 1);
         
         var result = await query.Select(item => 
@@ -44,7 +40,8 @@ internal sealed class TaskItemQueryService : ITaskItemQueryService
                 item.Title, 
                 item.Description, 
                 item.Priority, 
-                item.DueDate)
+                item.DueDate,
+                item.IsCompleted)
         ).ToListAsync(cancellationToken);
 
         var cursor = "";
@@ -68,7 +65,8 @@ internal sealed class TaskItemQueryService : ITaskItemQueryService
                     item.Title, 
                     item.Description, 
                     item.Priority, 
-                    item.DueDate)
+                    item.DueDate,
+                    item.IsCompleted)
             )
             .FirstOrDefaultAsync(cancellationToken);
         

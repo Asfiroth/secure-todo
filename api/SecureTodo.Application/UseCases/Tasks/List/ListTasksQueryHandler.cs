@@ -21,7 +21,7 @@ public class ListTasksQueryHandler : IQueryHandler<ListTasksQuery, Result<PagedL
         _logger.LogInformation("Retrieving tasks for current user");
         var filter = new PagingFilter(
             Filter: query.SearchTerm,
-            Priority: query.Priority,
+            IsCompleted: query.IsCompleted,
             Cursor: query.Cursor,
             PageSize: query.PageSize,
             UserId: query.UserId);

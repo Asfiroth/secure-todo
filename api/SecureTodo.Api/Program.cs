@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using SecureTodo.Api.Extensions;
 using SecureTodo.Api.Services;
 using SecureTodo.Application.Extensions;
@@ -20,8 +21,9 @@ try
     builder.Host.UseSerilog((context, configuration) => 
         configuration.ReadFrom.Configuration(context.Configuration));
 
-    builder.Services.AddOpenApi();
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddOpenApi();
+    
 
     // Cross cutting services.
     builder.Services.AddTransient<IAuthService, AuthService>();
@@ -80,6 +82,7 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
+        app.MapScalarApiReference("/docs");
     }
     
     app.UseCors(corsPolicyName);

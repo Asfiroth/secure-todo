@@ -7,11 +7,11 @@ public record PagedList<T>(
     IReadOnlyCollection<T> Items, 
     string Cursor) where T : notnull;
 
-public record TaskItemDto(Guid Id, string Title, string? Description, TaskPriority Priority, DateOnly DueDate);
+public record TaskItemDto(Guid Id, string Title, string? Description, TaskPriority Priority, DateOnly DueDate, bool IsCompleted);
 
 public record PagingFilter(
     string? Filter, 
-    TaskPriority? Priority, 
+    bool IsCompleted,
     string Cursor, 
     int PageSize,
     Guid UserId);

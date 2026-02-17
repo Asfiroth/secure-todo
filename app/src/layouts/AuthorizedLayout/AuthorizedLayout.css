@@ -4,7 +4,7 @@
 }
 
 .header-container {
-  @apply flex flex-row items-center justify-items-stretch pr-6;
+  @apply w-full h-12 flex;
 }
 
 .page-content {

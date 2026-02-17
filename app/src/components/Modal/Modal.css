@@ -1,0 +1,86 @@
+@reference "../../app.css";
+
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Modal Container - The actual modal box */
+.modal-container {
+  @apply relative max-h-[90vh] overflow-y-auto rounded-xl bg-gray-950 shadow-2xl;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Modal Sizes */
+.modal-small {
+  @apply w-full max-w-md;
+}
+
+.modal-medium {
+  @apply w-full max-w-2xl;
+}
+
+.modal-large {
+  @apply w-full max-w-4xl;
+}
+
+.modal-full {
+  @apply w-full max-w-7xl;
+}
+
+/* Modal Header */
+.modal-header {
+  @apply sticky top-0 z-10 flex items-center justify-between rounded-t-xl border-b border-gray-200 bg-gray-950 px-6 py-4;
+}
+
+.modal-title {
+  @apply m-0 text-xl font-semibold text-white;
+}
+
+/* Close Button */
+.modal-close-button {
+  @apply flex items-center justify-center rounded-lg p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none;
+}
+
+.modal-close-icon {
+  @apply h-5 w-5;
+}
+
+/* Modal Body */
+.modal-body {
+  @apply px-6 py-6;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar Styling for Modal */
+.modal-container::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  @apply rounded-r-xl bg-gray-100;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-gray-300 hover:bg-gray-400;
+}

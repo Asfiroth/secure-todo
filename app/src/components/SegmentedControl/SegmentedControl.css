@@ -1,0 +1,11 @@
+@reference "../../app.css";
+.segmented-control {
+  @apply flex w-fit flex-row gap-2 rounded-lg bg-gray-950;
+
+  .segment {
+    @apply flex cursor-pointer flex-col gap-2 rounded-lg p-2 px-5;
+  }
+  .selected {
+    @apply border-red-900 bg-red-900 text-white;
+  }
+}

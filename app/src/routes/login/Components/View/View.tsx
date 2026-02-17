@@ -8,7 +8,6 @@ const View = () => {
   const { isAuthenticated, isLoading, login } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    console.info(isAuthenticated);
     if (isAuthenticated) {
       navigate('/', { replace: true });
     }
@@ -23,10 +22,10 @@ const View = () => {
   }
 
   return (
-    <>
-      <div>Home</div>
-      <button onClick={handleLogin}>Login</button>
-    </>
+    <div className="login-container">
+      <span className="intro-message">Welcome to Task Manager</span>
+      <button className="login-button" onClick={handleLogin}>Sign In to continue</button>
+    </div>
   );
 };
 

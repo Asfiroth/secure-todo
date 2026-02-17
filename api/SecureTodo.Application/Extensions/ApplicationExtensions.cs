@@ -1,5 +1,7 @@
+using FluentValidation;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
+using SecureTodo.Application.Validators;
 
 namespace SecureTodo.Application.Extensions;
 
@@ -7,6 +9,7 @@ public static class ApplicationExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
         services.AddMediatorBehaviours();
         return services;
     }

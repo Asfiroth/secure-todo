@@ -8,7 +8,7 @@ namespace SecureTodo.Api.Endpoints.Tasks;
 
 public sealed record ListTasksRequest(
     string? SearchTerm,
-    TaskPriority? Priority,
+    bool IsCompleted,
     int PageSize = 10,
     string Cursor = "");
 
@@ -30,7 +30,7 @@ public class List : IEndpoint
 
         var result = await mediator.Send(new ListTasksQuery(
             SearchTerm: request.SearchTerm,
-            Priority: request.Priority,
+            IsCompleted: request.IsCompleted,
             PageSize: request.PageSize,
             Cursor: request.Cursor,
             UserId: userId.Value

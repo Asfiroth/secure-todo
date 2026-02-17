@@ -1,3 +1,5 @@
+@reference "../../app.css";
+
 .bubble-loader {
   @apply flex h-12 items-center justify-center;
 

@@ -1,0 +1,36 @@
+@reference "../../../../app.css";
+
+.create-todo-btn {
+  @apply cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg py-2 px-4 align-bottom;
+}
+
+.todo-content {
+  @apply flex w-md flex-1 flex-col gap-2.5;
+
+  .priority-high {
+    @apply text-sm font-medium text-red-500;
+  }
+
+  .priority-medium {
+    @apply text-sm font-medium text-yellow-500;
+  }
+
+  .priority-low {
+    @apply text-sm font-medium text-green-500;
+  }
+
+  .description {
+    @apply text-sm;
+  }
+
+  .due-date {
+    @apply text-sm text-gray-400;
+  }
+}
+
+.actions {
+  @apply flex h-fit w-fit flex-row gap-2 text-sm font-medium text-white;
+  button {
+    @apply cursor-pointer;
+  }
+}
