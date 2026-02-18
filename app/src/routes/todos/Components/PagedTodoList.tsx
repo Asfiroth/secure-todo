@@ -27,7 +27,7 @@ export const PagedTodoList: FC<IProp> = ({ isLoading, todos, refresh, handleUpda
       toast.error('Failed to delete todo');
       console.error(e);
     }
-  }
+  };
 
   const handleCompletion = async (id: string) => {
     try {

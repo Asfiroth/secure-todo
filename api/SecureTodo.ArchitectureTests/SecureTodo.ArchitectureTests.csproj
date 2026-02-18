@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="TngTech.ArchUnitNET.TUnit" />
+        <PackageReference Include="TUnit" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SecureTodo.Api\SecureTodo.Api.csproj" />
+      <ProjectReference Include="..\SecureTodo.Application\SecureTodo.Application.csproj" />
+      <ProjectReference Include="..\SecureTodo.Domain\SecureTodo.Domain.csproj" />
+      <ProjectReference Include="..\SecureTodo.Infrastructure\SecureTodo.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

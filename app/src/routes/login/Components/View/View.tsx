@@ -24,7 +24,9 @@ const View = () => {
   return (
     <div className="login-container">
       <span className="intro-message">Welcome to Task Manager</span>
-      <button className="login-button" onClick={handleLogin}>Sign In to continue</button>
+      <button className="login-button" onClick={handleLogin}>
+        Sign In to continue
+      </button>
     </div>
   );
 };

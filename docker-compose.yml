@@ -42,12 +42,9 @@ services:
       
       # Database configuration
       KC_DB: postgres
-      # KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-      # KC_DB_USERNAME: keycloak
-      # KC_DB_PASSWORD: keycloak_password
-      KC_DB_URL: jdbc:postgresql://postgresql.internal.home/keycloak
-      KC_DB_USERNAME: postgres
-      KC_DB_PASSWORD: P@ssw0rd123
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak_password
       
       # Development settings
       KC_HTTP_ENABLED: "true"
@@ -55,14 +52,43 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8180
+      KC_PROXY: edge
       
       # Logging
       KC_LOG_LEVEL: info
     ports:
-      - "8180:8080"
+      - "8180:8080"    
+    depends_on: [postgres]
+    networks:
+      - todo-network
+
+  todo-api:
+    build:
+      context: .
+      dockerfile: .docker/todo-api.dockerfile
+    container_name: todo-api
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5000:5000"
     volumes:
-      - ./keycloak/import:/opt/keycloak/data/import
-    # depends_on: [postgres]
+      - ./todo-api:/app
+    depends_on: [sqlserver, keycloak]
+    networks:
+      - todo-network
+
+  todo-web:
+    build:
+      context: .
+      dockerfile: .docker/todo-web.dockerfile
+    container_name: todo-web
+    restart: always
+    ports:
+      - "3000:3000"    
+    depends_on: [todo-api]
     networks:
       - todo-network
 

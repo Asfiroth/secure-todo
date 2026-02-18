@@ -1,17 +1,17 @@
 @reference "../../app.css";
 
 .text-area {
-    @apply rounded-lg outline-0 bg-gray-950 text-gray-50 flex flex-row font-normal border border-gray-300 px-4 py-2.5;
+  @apply flex flex-row rounded-lg border border-gray-300 bg-gray-950 px-4 py-2.5 font-normal text-gray-50 outline-0;
 
-    &.focus{
-        @apply border-transparent ring-2 ring-red-900 outline-none;
+  &.focus {
+    @apply border-transparent ring-2 ring-red-900 outline-none;
+  }
+
+  textarea {
+    @apply w-full resize-none bg-transparent text-sm font-normal outline-0;
+
+    &&::placeholder {
+      @apply text-gray-400;
     }
-
-    textarea {
-        @apply w-full bg-transparent outline-0 resize-none font-normal text-sm;
-
-        &&::placeholder {
-            @apply text-gray-400;
-        }
-    }
+  }
 }

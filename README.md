@@ -14,24 +14,45 @@ A modern, secure todo application built with .NET 10 and React 19, following Cle
 #### Key Libraries
 
 - **Entity Framework Core 10.0.3** - ORM with SQL Server provider
-- **Mediator 3.0.1** - CQRS pattern implementation
+- **Mediator 3.0.1** - Source-generated CQRS pattern implementation
 - **FluentValidation 12.1.1** - Request validation
 - **Ardalis.Result 10.1.0** - Result pattern for API responses
-- **Serilog 10.0.0** - Structured logging with enrichers
+- **Serilog 10.0.0** - Structured logging with enrichers (ClientInfo, Environment, Thread)
+- **Scalar 2.12.41** - API documentation (available at `/docs` in development)
+- **JWT Bearer Authentication** - Token-based auth via Keycloak OIDC
 
 ### Frontend (App)
 
 - **React 19.2.0** - UI library
-- **React Router 7.13.0** - Full-stack routing and framework
-- **TypeScript 5.9.3** - Type-safe JavaScript
+- **React Router 7.13.0** - File-based routing framework (SSR disabled, client-only SPA)
+- **TypeScript 5.9.3** - Type-safe JavaScript (strict mode)
 - **Vite 7.3.1** - Build tool and dev server
 - **Tailwind CSS 4.1.18** - Utility-first CSS framework
 
 #### Key Libraries
 
 - **Axios 1.13.5** - HTTP client for API communication
+- **Keycloak JS 26.2.3** - Keycloak JavaScript adapter for OIDC authentication
+- **React Hook Form 7.71.1** - Form state management and validation
 - **React Hot Toast 2.6.0** - Toast notifications
+- **Heroicons 2.2.0** - SVG icon library
 - **Lodash 4.17.23** - Utility functions
+
+#### UI Components
+
+Reusable component library with dedicated CSS files using Tailwind `@apply`:
+
+- **Card** - Content container
+- **Header** - Page header
+- **Label** - Form labels
+- **Loader** - Loading indicator with bubble animation
+- **Modal** - Accessible dialog with keyboard support and backdrop
+- **SegmentedControl** - Toggle/filter control
+- **SelectField** - Dropdown select input
+- **TextAreaField** - Multi-line text input
+- **TextField** - Single-line text input
+- **TextError** - Validation error display
+- **TodoFormModal** - Todo creation/editing modal form
 
 ### Database
 
@@ -42,14 +63,18 @@ A modern, secure todo application built with .NET 10 and React 19, following Cle
 
 - **Keycloak 26.0.5** - Open Source Identity and Access Management
   - OpenID Connect (OIDC) provider
+  - Authorization Code flow with PKCE (S256)
   - Single Sign-On (SSO) capabilities
-  - User management and authentication
+  - User management and role-based access
 
 ### DevOps & Tooling
 
 - **Docker** & **Docker Compose** - Containerization and orchestration
-- **ESLint** - JavaScript/TypeScript linting
-- **Prettier** - Code formatting
+- **Nginx** (unprivileged) - Production SPA serving
+- **ESLint 9** - JavaScript/TypeScript linting
+- **Prettier 3** - Code formatting (with Tailwind plugin)
+- **EF Core Migrations** - Database schema management via shell scripts
+- **Architecture Tests** - ArchUnitNET + TUnit for enforcing Clean Architecture constraints
 - **Target OS**: Linux (ARM64)
 
 ## Project Structure
@@ -57,22 +82,39 @@ A modern, secure todo application built with .NET 10 and React 19, following Cle
 ```
 secure-todo/
 ├── api/                              # Backend .NET application
-│   ├── SecureTodo.Api/              # API layer (controllers, endpoints)
-│   ├── SecureTodo.Application/      # Application layer (business logic, CQRS)
-│   ├── SecureTodo.Domain/           # Domain layer (entities, interfaces)
-│   ├── SecureTodo.Infrastructure/   # Infrastructure layer (EF Core, data access)
+│   ├── SecureTodo.Api/              # API layer (endpoints, auth service)
+│   ├── SecureTodo.Application/      # Application layer (use cases, CQRS, validators)
+│   ├── SecureTodo.Domain/           # Domain layer (entities, value objects, enums)
+│   ├── SecureTodo.Infrastructure/   # Infrastructure layer (EF Core, repositories, query services)
+│   ├── SecureTodo.ArchitectureTests/# Architecture constraint tests
 │   ├── Directory.Build.props        # Shared build configuration
 │   └── Directory.Packages.props     # Centralized package management
 ├── app/                             # Frontend React application
-│   ├── src/                         # Source files
-│   ├── package.json                 # Node dependencies
+│   ├── src/
+│   │   ├── components/             # Reusable UI components
+│   │   ├── contexts/               # React contexts (Auth)
+│   │   ├── hoc/                    # Higher-order components (AuthProvider, ProtectedRoute)
+│   │   ├── hooks/                  # Custom hooks (useAuth, useTodo)
+│   │   ├── layouts/                # Page layouts (Authorized, Guest)
+│   │   ├── lib/                    # Library setup (Keycloak, Axios API client)
+│   │   ├── routes/                 # Route pages (login, todos)
+│   │   ├── types/                  # TypeScript type definitions
+│   │   └── utils/                  # Utility helpers
+│   ├── package.json                # Node dependencies
 │   ├── vite.config.ts              # Vite configuration
 │   └── react-router.config.ts      # React Router configuration
+├── .docker/                         # Docker build files
+│   ├── api.dockerfile              # .NET API multi-stage build
+│   ├── app.dockerfile              # React SPA multi-stage build (Nginx)
+│   └── keycloak.dockerfile         # Keycloak with import directory
 ├── keycloak/                        # Keycloak configuration
-│   └── import/                      # Realm import files
-│       └── todo-realm.json         # Todo realm with client and users
-├── docker-compose.yml               # Docker services configuration
-└── scripts/                         # Utility scripts
+│   └── import/
+│       └── todo-realm.json         # Todo realm with client, roles, and users
+├── scripts/                         # Utility scripts
+│   ├── add_migration.sh            # Create EF Core migration
+│   ├── bundle_migration.sh         # Generate migration bundle
+│   └── execute_bundle.sh           # Run migration bundle
+└── docker-compose.yml               # Docker services configuration
 ```
 
 ## Getting Started
@@ -80,7 +122,7 @@ secure-todo/
 ### Prerequisites
 
 - .NET 10 SDK
-- Node.js 20+ and npm
+- Node.js (LTS) and npm
 - Docker and Docker Compose
 
 ### Running the Services
@@ -98,29 +140,17 @@ The Keycloak realm `todo` will be automatically imported with:
 - Client: `todo-app` (React SPA)
 - Test User: `testuser` / `password123`
 
-### Accessing Services
-
-**Keycloak Admin Console:**
-- URL: http://localhost:8180/admin
-- Username: `admin`
-- Password: `admin`
-
-**Keycloak Todo Realm:**
-- URL: http://localhost:8180/realms/todo
-- Account Console: http://localhost:8180/realms/todo/account
-- OpenID Configuration: http://localhost:8180/realms/todo/.well-known/openid-configuration
-
-**Test User Login:**
-- Username: `testuser`
-- Email: `testuser@example.com`
-- Password: `password123`
-
 ### Running the API
 
 ```bash
 cd api/SecureTodo.Api
 dotnet run
 ```
+
+The API will be available at:
+- HTTP: http://localhost:5208
+- HTTPS: https://localhost:7251
+- API Docs: http://localhost:5208/docs (development only)
 
 ### Running the Frontend
 
@@ -130,30 +160,52 @@ npm install
 npm run dev
 ```
 
+### Running Architecture Tests
+
+```bash
+cd api
+dotnet test
+```
+
 ## Development
 
 ### Frontend
 
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Build for production
-- `npm run lint` - Run ESLint
+- `npm run lint` - Run ESLint with auto-fix
 - `npm run lint:format` - Format code with Prettier
 
 ### Backend
 
 The API follows Clean Architecture principles:
 
-- **Domain Layer**: Core business entities and interfaces
-- **Application Layer**: Business logic, CQRS handlers, validation
-- **Infrastructure Layer**: Data access, EF Core, external services
-- **API Layer**: HTTP endpoints, middleware, configuration
+- **Domain Layer**: Core business entities, value objects, and enums (no external dependencies)
+- **Application Layer**: Use cases (CQRS handlers), validators, service interfaces
+- **Infrastructure Layer**: EF Core DbContext, repositories, query services, interceptors
+- **API Layer**: Minimal API endpoints, authentication service, DI configuration
+
+### Database Migrations
+
+```bash
+# Create a new migration
+./scripts/add_migration.sh -n <MigrationName>
+
+# Generate a migration bundle
+./scripts/bundle_migration.sh
+
+# Execute the migration bundle
+./scripts/execute_bundle.sh
+```
 
 ## Architecture Patterns
 
 - **Clean Architecture** - Dependency inversion and separation of concerns
-- **CQRS** - Command Query Responsibility Segregation via Mediator
-- **Result Pattern** - Explicit success/failure handling
-- **Repository Pattern** - Data access abstraction
+- **CQRS** - Command Query Responsibility Segregation via source-generated Mediator
+- **Result Pattern** - Explicit success/failure handling with Ardalis.Result
+- **Repository Pattern** - Data access abstraction (write-side)
+- **Query Service Pattern** - Data access for read operations
+- **Strongly-Typed IDs** - Domain entity IDs as value objects
 
 ## Authentication & Authorization
 
@@ -168,7 +220,7 @@ The application uses **Keycloak** for authentication and authorization with Open
 - Client Type: Public (React SPA)
 - Protocol: OpenID Connect
 - Flow: Authorization Code with PKCE (S256)
-- Redirect URIs: 
+- Redirect URIs:
   - `http://localhost:3000/*`
   - `http://localhost:5173/*`
   - `http://localhost:8080/*`
@@ -183,35 +235,19 @@ The application uses **Keycloak** for authentication and authorization with Open
 - Password reset allowed
 - Email verification supported
 
-### Integration with React
+### Accessing Keycloak
 
-To integrate the React app with Keycloak:
+**Admin Console:**
+- URL: http://localhost:8180/admin
+- Username: `admin`
+- Password: `admin`
 
-1. Install Keycloak JS adapter:
-```bash
-npm install keycloak-js
-```
+**Todo Realm:**
+- URL: http://localhost:8180/realms/todo
+- Account Console: http://localhost:8180/realms/todo/account
+- OpenID Configuration: http://localhost:8180/realms/todo/.well-known/openid-configuration
 
-2. Configure Keycloak client:
-```javascript
-import Keycloak from 'keycloak-js';
-
-const keycloak = new Keycloak({
-  url: 'http://localhost:8180',
-  realm: 'todo',
-  clientId: 'todo-app'
-});
-```
-
-3. Initialize and authenticate:
-```javascript
-keycloak.init({ 
-  onLoad: 'login-required',
-  pkceMethod: 'S256'
-}).then(authenticated => {
-  if (authenticated) {
-    // User is authenticated, access token available
-    console.log('Token:', keycloak.token);
-  }
-});
-```
+**Test User:**
+- Username: `testuser`
+- Email: `testuser@example.com`
+- Password: `password123`

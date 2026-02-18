@@ -20,7 +20,6 @@
   @apply text-red-500;
 }
 
-
 .todo-form-textarea {
   @apply resize-none;
 }

@@ -1,20 +1,20 @@
 @reference "../../app.css";
 
 .select-field {
-    @apply w-full rounded-lg border border-gray-300 px-4 py-2.5 bg-gray-950;
-    .select-field-input {
-        @apply min-w-[160px] outline-0 bg-transparent text-white relative flex flex-row justify-between align-middle font-normal text-sm appearance-none;
-    }
+  @apply w-full rounded-lg border border-gray-300 bg-gray-950 px-4 py-2.5;
+  .select-field-input {
+    @apply relative flex min-w-[160px] appearance-none flex-row justify-between bg-transparent align-middle text-sm font-normal text-white outline-0;
+  }
 
-    &.focus{
-        @apply border-transparent ring-2 ring-red-900 outline-none;
-    }
+  &.focus {
+    @apply border-transparent ring-2 ring-red-900 outline-none;
+  }
 
-    option {
-        @apply text-gray-950;
-    }
+  option {
+    @apply text-gray-950;
+  }
 
-    .chevron-icon {
-        @apply pointer-events-none absolute inset-y-0 right-2 flex items-center;
-    }
+  .chevron-icon {
+    @apply pointer-events-none absolute inset-y-0 right-2 flex items-center;
+  }
 }

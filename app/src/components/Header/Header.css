@@ -1,15 +1,13 @@
 @reference "../../app.css";
 
 .welcome-message {
-    @apply text-white w-full text-end text-2xl mt-3;
+  @apply mt-3 w-full text-end text-2xl text-white;
 
-    span {
-        @apply font-bold pr-5 ;
-    }
-
-
+  span {
+    @apply pr-5 font-bold;
+  }
 }
 
 .logout {
-    @apply flex align-middle cursor-pointer bg-blue-950 rounded-lg flex-row px-4 py-1.5 gap-2 mt-3 mr-4;
+  @apply mt-3 mr-4 flex cursor-pointer flex-row gap-2 rounded-lg bg-blue-950 px-4 py-1.5 align-middle;
 }

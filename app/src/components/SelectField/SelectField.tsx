@@ -12,7 +12,11 @@ interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement>
   options?: SelectOption[];
 }
 
-export const SelectField: React.FC<SelectFieldProps> = ({ options, children, ...props }) => {
+export const SelectField: React.FC<SelectFieldProps> = ({
+  options,
+  children,
+  ...props
+}) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   return (
     <div className={`select-field relative ${isFocused ? 'focus' : ''}`}>

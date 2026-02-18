@@ -42,8 +42,11 @@ const View = () => {
   }, [filter]);
 
   const debouncedFilter = useMemo(() => {
-    return debounce((value: string) => setFilter((prev) => ({ ...prev, searchTerm: value })), 500);
-  },[])
+    return debounce(
+      (value: string) => setFilter((prev) => ({ ...prev, searchTerm: value })),
+      500,
+    );
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -58,7 +61,7 @@ const View = () => {
   useEffect(() => {
     return () => {
       debouncedFilter.cancel();
-    }
+    };
   }, [debouncedFilter]);
 
   return (

@@ -12,10 +12,9 @@ export type Paged<T> = {
   cursor: string;
 };
 
-
 export interface TodoFilter {
   searchTerm?: string;
   isCompleted: boolean;
   pageSize: number;
   cursor?: string;
-};
+}

@@ -50,7 +50,7 @@ export const TodoFormModal: FC<IProps> = ({ isOpen, setIsOpen, todo, refresh }) 
       description: todo.description,
       priority: todo.priority,
       dueDate: todo.dueDate,
-    })
+    });
   }, [todo]);
 
   const handleCreateTodo = async (formTodo: TodoFormData) => {
@@ -98,8 +98,7 @@ export const TodoFormModal: FC<IProps> = ({ isOpen, setIsOpen, todo, refresh }) 
     } finally {
       setIsSubmitted(false);
     }
-  }
-
+  };
 
   const onSubmit = async (data: TodoFormData) => {
     if (todo) void handleUpdateTodo(data);

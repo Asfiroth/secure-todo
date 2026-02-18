@@ -25,5 +25,7 @@
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
     <PackageVersion Include="Ardalis.Result.FluentValidation" Version="10.1.0" />
     <PackageVersion Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
+    <PackageVersion Include="TngTech.ArchUnitNET.TUnit" Version="0.13.2" />
+    <PackageVersion Include="TUnit" Version="1.12.65" />
   </ItemGroup>
 </Project>

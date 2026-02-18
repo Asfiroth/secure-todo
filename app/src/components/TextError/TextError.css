@@ -1,5 +1,5 @@
 @reference "../../app.css";
 
 .error-message {
-    @apply text-red-500 text-xs;
+  @apply text-xs text-red-500;
 }

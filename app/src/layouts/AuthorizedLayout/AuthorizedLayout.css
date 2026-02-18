@@ -4,7 +4,7 @@
 }
 
 .header-container {
-  @apply w-full h-12 flex;
+  @apply flex h-12 w-full;
 }
 
 .page-content {

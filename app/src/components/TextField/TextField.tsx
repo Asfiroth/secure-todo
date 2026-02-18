@@ -7,8 +7,8 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export type Ref = HTMLInputElement;
 
-export const TextField = forwardRef<Ref, TextFieldProps>(({action, ...props}, ref)=> {
-  const [isFocused, setIsFocused] = useState<boolean>(false)
+export const TextField = forwardRef<Ref, TextFieldProps>(({ action, ...props }, ref) => {
+  const [isFocused, setIsFocused] = useState<boolean>(false);
   return (
     <div className={`text-field ${isFocused ? 'focus' : ''}`}>
       <input
