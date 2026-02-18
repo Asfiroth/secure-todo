@@ -61,16 +61,16 @@ Reusable component library with dedicated CSS files using Tailwind `@apply`:
 
 ### Authentication
 
-- **Keycloak 26.0.5** - Open Source Identity and Access Management
+- **Keycloak 26.3.4** - Open Source Identity and Access Management
   - OpenID Connect (OIDC) provider
   - Authorization Code flow with PKCE (S256)
-  - Single Sign-On (SSO) capabilities
+  - Single Sign-On (SSO) with silent check via iframe
   - User management and role-based access
 
 ### DevOps & Tooling
 
 - **Docker** & **Docker Compose** - Containerization and orchestration
-- **Nginx** - Reverse proxy (subdomain routing) and SPA serving
+- **Nginx** - Reverse proxy (`*.localhost` subdomain routing) and SPA serving
 - **ESLint 9** - JavaScript/TypeScript linting
 - **Prettier 3** - Code formatting (with Tailwind plugin)
 - **EF Core Migrations** - Database schema management via shell scripts
@@ -90,6 +90,8 @@ secure-todo/
 │   ├── Directory.Build.props        # Shared build configuration
 │   └── Directory.Packages.props     # Centralized package management
 ├── app/                             # Frontend React application
+│   ├── public/
+│   │   └── silent-check-sso.html   # Keycloak silent SSO check callback
 │   ├── src/
 │   │   ├── components/             # Reusable UI components
 │   │   ├── contexts/               # React contexts (Auth)
@@ -106,7 +108,9 @@ secure-todo/
 ├── .docker/                         # Docker build files
 │   ├── api.dockerfile              # .NET API multi-stage build
 │   ├── app.dockerfile              # React SPA multi-stage build (Nginx)
-│   ├── keycloak.dockerfile         # Keycloak with import directory
+│   ├── keycloak.dockerfile         # Keycloak with realm import
+│   └── migrator.dockerfile         # EF Core migration runner
+├── proxy/
 │   └── proxy.conf                  # Nginx reverse proxy configuration
 ├── keycloak/                        # Keycloak configuration
 │   └── import/
@@ -114,7 +118,8 @@ secure-todo/
 ├── scripts/                         # Utility scripts
 │   ├── add_migration.sh            # Create EF Core migration
 │   ├── bundle_migration.sh         # Generate migration bundle
-│   └── execute_bundle.sh           # Run migration bundle
+│   ├── execute_bundle.sh           # Run migration bundle
+│   └── init-db.sql                 # Database initialization script
 └── docker-compose.yml               # Docker services configuration
 ```
 
@@ -126,14 +131,14 @@ secure-todo/
 - Node.js (LTS) and npm
 - Docker and Docker Compose
 
-### Running the Services (Docker)
+### Running with Docker
 
-#### 1. Configure local DNS
+#### 1. Configure local DNS (if needed)
 
-Add the following entries to your `/etc/hosts` file:
+Most modern browsers (Chrome, Edge) resolve `*.localhost` to `127.0.0.1` automatically. If your browser or system tools don't, add these entries to your `/etc/hosts`:
 
 ```
-127.0.0.1  app.todo.local api.todo.local auth.todo.local
+127.0.0.1  app.localhost api.localhost auth.localhost
 ```
 
 #### 2. Start all services
@@ -145,30 +150,32 @@ docker-compose up -d
 This will start:
 - **SQL Server 2025** on port 1433 (application database)
 - **PostgreSQL 17** on port 5432 (Keycloak database)
-- **Keycloak 26.0.5** (authentication server)
+- **Keycloak 26.3.4** (authentication server)
 - **.NET API** (backend)
 - **React SPA** (frontend)
-- **Nginx Reverse Proxy** on port 80 (routes subdomains to services)
+- **Nginx Reverse Proxy** on port 80 (routes `*.localhost` subdomains to services)
 
-#### Accessing Services via Proxy
+The database is initialized via `scripts/init-db.sql` and migrations are applied automatically by the `migrator` service before the API starts.
+
+#### Accessing Services
 
 | Service | URL |
 |---------|-----|
-| React SPA | http://app.todo.local |
-| .NET API | http://api.todo.local |
-| API Docs | http://api.todo.local/docs |
-| Keycloak Admin | http://auth.todo.local/admin |
-| Keycloak Realm | http://auth.todo.local/realms/todo |
+| React SPA | http://app.localhost |
+| .NET API | http://api.localhost |
+| API Docs | http://api.localhost/docs |
+| Keycloak Admin | http://auth.localhost/admin |
+| Keycloak Realm | http://auth.localhost/realms/todo |
 
-The Keycloak realm `todo` will be automatically imported with:
+The Keycloak realm `todo` is automatically imported with:
 - Client: `todo-app` (React SPA)
 - Test User: `testuser` / `password123`
 
 ### Running Locally (without Docker)
 
-For local development, the API and frontend run directly on the host. Configure your `app/.env` to point at your local services.
+For local development, the API and frontend run directly on the host. Configure `app/.env` to point at your local Keycloak and API instances.
 
-### Running the API
+#### Running the API
 
 ```bash
 cd api/SecureTodo.Api
@@ -180,7 +187,7 @@ The API will be available at:
 - HTTPS: https://localhost:7251
 - API Docs: http://localhost:5208/docs (development only)
 
-### Running the Frontend
+#### Running the Frontend
 
 ```bash
 cd app
@@ -188,7 +195,7 @@ npm install
 npm run dev
 ```
 
-### Running Architecture Tests
+#### Running Architecture Tests
 
 ```bash
 cd api
@@ -249,7 +256,7 @@ The application uses **Keycloak** for authentication and authorization with Open
 - Protocol: OpenID Connect
 - Flow: Authorization Code with PKCE (S256)
 - Redirect URIs:
-  - `http://app.todo.local/*` (Docker deployment)
+  - `http://app.localhost/*` (Docker deployment)
   - `http://localhost:5173/*` (local development)
   - `http://localhost:9001/*`
 
@@ -259,6 +266,7 @@ The application uses **Keycloak** for authentication and authorization with Open
 
 **Security Features:**
 - PKCE (Proof Key for Code Exchange) enabled
+- Silent SSO check via iframe (`silent-check-sso.html`)
 - Brute force protection enabled
 - Password reset allowed
 - Email verification supported
@@ -266,10 +274,10 @@ The application uses **Keycloak** for authentication and authorization with Open
 ### Accessing Keycloak
 
 **Via Reverse Proxy (Docker):**
-- Admin Console: http://auth.todo.local/admin
-- Todo Realm: http://auth.todo.local/realms/todo
-- Account Console: http://auth.todo.local/realms/todo/account
-- OpenID Configuration: http://auth.todo.local/realms/todo/.well-known/openid-configuration
+- Admin Console: http://auth.localhost/admin
+- Todo Realm: http://auth.localhost/realms/todo
+- Account Console: http://auth.localhost/realms/todo/account
+- OpenID Configuration: http://auth.localhost/realms/todo/.well-known/openid-configuration
 
 **Credentials:**
 - Admin: `admin` / `admin`
