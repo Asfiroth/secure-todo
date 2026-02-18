@@ -78,14 +78,12 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8180
-      KC_PROXY: edge
+      KC_HOSTNAME: auth.todo.local
+      KC_HOSTNAME_PORT: 80
+      KC_PROXY_HEADERS: xforwarded
       
       # Logging
       KC_LOG_LEVEL: info
-    ports:
-      - 8180:8080
     depends_on: [postgres]
     networks:
       - todo-network
@@ -111,13 +109,11 @@ services:
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      CrossOrigins: http://localhost:9001
-      Identity__Authority: http://todo-auth:8180/realms/todo
-      Identity__Issuer: http://localhost:8180/realms/todo
+      CrossOrigins: http://app.todo.local
+      Identity__Authority: http://todo-auth:8080/realms/todo
+      Identity__Issuer: http://auth.todo.local/realms/todo
       Identity__Audiences: account
       ConnectionStrings__TodoDb: Data Source=sqlserver,1433;User ID=sa;Password=P@ssw0rd123;Initial Catalog=todo-db;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;;Persist Security Info=False;
-    ports:
-      - 9000:8080
     depends_on:
       migrator:
         condition: service_completed_successfully
@@ -133,14 +129,30 @@ services:
       context: ./app
       dockerfile: ../.docker/app.dockerfile
       args:
-        KEYCLOAK_URL: http://localhost:8180/
+        KEYCLOAK_URL: http://auth.todo.local/
         KEYCLOAK_REALM: todo
         KEYCLOAK_CLIENT_ID: todo-app
-        TODO_API: http://localhost:9000 
-    ports:
-      - 9001:8080    
+        TODO_API: http://api.todo.local
     depends_on:
       todo-api:
+        condition: service_started
+    networks:
+      - todo-network
+
+  todo-proxy:
+    image: nginx:1.29-bookworm
+    container_name: todo-proxy
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./proxy/proxy.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      todo-web:
+        condition: service_started
+      todo-api:
+        condition: service_started
+      todo-auth:
         condition: service_started
     networks:
       - todo-network

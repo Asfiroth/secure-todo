@@ -20,11 +20,13 @@
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
         "http://localhost:9001/*",
-        "http://localhost:5173/*"
+        "http://localhost:5173/*",
+        "http://app.todo.local/*"
       ],
       "webOrigins": [
         "http://localhost:9001",
-        "http://localhost:5173"
+        "http://localhost:5173",
+        "http://app.todo.local"
       ],
       "publicClient": true,
       "protocol": "openid-connect",
@@ -34,7 +36,7 @@
       "serviceAccountsEnabled": false,
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:9001/*##http://localhost:5173/*"
+        "post.logout.redirect.uris": "http://localhost:9001/*##http://localhost:5173/*##http://app.todo.local/*"
       },
       "fullScopeAllowed": true,
       "defaultClientScopes": [

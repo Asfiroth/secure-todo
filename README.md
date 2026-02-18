@@ -70,7 +70,7 @@ Reusable component library with dedicated CSS files using Tailwind `@apply`:
 ### DevOps & Tooling
 
 - **Docker** & **Docker Compose** - Containerization and orchestration
-- **Nginx** (unprivileged) - Production SPA serving
+- **Nginx** - Reverse proxy (subdomain routing) and SPA serving
 - **ESLint 9** - JavaScript/TypeScript linting
 - **Prettier 3** - Code formatting (with Tailwind plugin)
 - **EF Core Migrations** - Database schema management via shell scripts
@@ -106,7 +106,8 @@ secure-todo/
 ├── .docker/                         # Docker build files
 │   ├── api.dockerfile              # .NET API multi-stage build
 │   ├── app.dockerfile              # React SPA multi-stage build (Nginx)
-│   └── keycloak.dockerfile         # Keycloak with import directory
+│   ├── keycloak.dockerfile         # Keycloak with import directory
+│   └── proxy.conf                  # Nginx reverse proxy configuration
 ├── keycloak/                        # Keycloak configuration
 │   └── import/
 │       └── todo-realm.json         # Todo realm with client, roles, and users
@@ -125,7 +126,17 @@ secure-todo/
 - Node.js (LTS) and npm
 - Docker and Docker Compose
 
-### Running the Services
+### Running the Services (Docker)
+
+#### 1. Configure local DNS
+
+Add the following entries to your `/etc/hosts` file:
+
+```
+127.0.0.1  app.todo.local api.todo.local auth.todo.local
+```
+
+#### 2. Start all services
 
 ```bash
 docker-compose up -d
@@ -134,11 +145,28 @@ docker-compose up -d
 This will start:
 - **SQL Server 2025** on port 1433 (application database)
 - **PostgreSQL 17** on port 5432 (Keycloak database)
-- **Keycloak 26.0.5** on port 8180 (authentication server)
+- **Keycloak 26.0.5** (authentication server)
+- **.NET API** (backend)
+- **React SPA** (frontend)
+- **Nginx Reverse Proxy** on port 80 (routes subdomains to services)
+
+#### Accessing Services via Proxy
+
+| Service | URL |
+|---------|-----|
+| React SPA | http://app.todo.local |
+| .NET API | http://api.todo.local |
+| API Docs | http://api.todo.local/docs |
+| Keycloak Admin | http://auth.todo.local/admin |
+| Keycloak Realm | http://auth.todo.local/realms/todo |
 
 The Keycloak realm `todo` will be automatically imported with:
 - Client: `todo-app` (React SPA)
 - Test User: `testuser` / `password123`
+
+### Running Locally (without Docker)
+
+For local development, the API and frontend run directly on the host. Configure your `app/.env` to point at your local services.
 
 ### Running the API
 
@@ -221,9 +249,9 @@ The application uses **Keycloak** for authentication and authorization with Open
 - Protocol: OpenID Connect
 - Flow: Authorization Code with PKCE (S256)
 - Redirect URIs:
-  - `http://localhost:3000/*`
-  - `http://localhost:5173/*`
-  - `http://localhost:8080/*`
+  - `http://app.todo.local/*` (Docker deployment)
+  - `http://localhost:5173/*` (local development)
+  - `http://localhost:9001/*`
 
 **Roles:**
 - `user` - Basic user role (default)
@@ -237,15 +265,14 @@ The application uses **Keycloak** for authentication and authorization with Open
 
 ### Accessing Keycloak
 
-**Admin Console:**
-- URL: http://localhost:8180/admin
-- Username: `admin`
-- Password: `admin`
+**Via Reverse Proxy (Docker):**
+- Admin Console: http://auth.todo.local/admin
+- Todo Realm: http://auth.todo.local/realms/todo
+- Account Console: http://auth.todo.local/realms/todo/account
+- OpenID Configuration: http://auth.todo.local/realms/todo/.well-known/openid-configuration
 
-**Todo Realm:**
-- URL: http://localhost:8180/realms/todo
-- Account Console: http://localhost:8180/realms/todo/account
-- OpenID Configuration: http://localhost:8180/realms/todo/.well-known/openid-configuration
+**Credentials:**
+- Admin: `admin` / `admin`
 
 **Test User:**
 - Username: `testuser`
