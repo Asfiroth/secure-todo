@@ -107,10 +107,12 @@ services:
       dockerfile: ../.docker/api.dockerfile
     container_name: todo-api
     restart: always
+    extra_hosts:
+      - "auth.localhost:host-gateway"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       CrossOrigins: http://app.localhost
-      Identity__Authority: http://todo-auth:8080/realms/todo
+      Identity__Authority: http://auth.localhost/realms/todo
       Identity__Issuer: http://auth.localhost/realms/todo
       Identity__Audiences: account
       ConnectionStrings__TodoDb: Data Source=sqlserver,1433;User ID=sa;Password=P@ssw0rd123;Initial Catalog=todo-db;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;;Persist Security Info=False;
