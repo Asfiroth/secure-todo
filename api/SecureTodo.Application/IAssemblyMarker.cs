@@ -1,3 +1,3 @@
 namespace SecureTodo.Application;
 
-public class AssemblyReference;
+public interface IAssemblyMarker;
