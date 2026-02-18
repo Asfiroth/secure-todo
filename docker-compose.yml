@@ -78,7 +78,7 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
-      KC_HOSTNAME: auth.todo.local
+      KC_HOSTNAME: auth.localhost
       KC_HOSTNAME_PORT: 80
       KC_PROXY_HEADERS: xforwarded
       
@@ -109,9 +109,9 @@ services:
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      CrossOrigins: http://app.todo.local
+      CrossOrigins: http://app.localhost
       Identity__Authority: http://todo-auth:8080/realms/todo
-      Identity__Issuer: http://auth.todo.local/realms/todo
+      Identity__Issuer: http://auth.localhost/realms/todo
       Identity__Audiences: account
       ConnectionStrings__TodoDb: Data Source=sqlserver,1433;User ID=sa;Password=P@ssw0rd123;Initial Catalog=todo-db;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;;Persist Security Info=False;
     depends_on:
@@ -129,10 +129,10 @@ services:
       context: ./app
       dockerfile: ../.docker/app.dockerfile
       args:
-        KEYCLOAK_URL: http://auth.todo.local/
+        KEYCLOAK_URL: http://auth.localhost/
         KEYCLOAK_REALM: todo
         KEYCLOAK_CLIENT_ID: todo-app
-        TODO_API: http://api.todo.local
+        TODO_API: http://api.localhost
     depends_on:
       todo-api:
         condition: service_started
