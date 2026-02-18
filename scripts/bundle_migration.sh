@@ -9,10 +9,20 @@ dbContextName="SecureTodoDbContext"
 startupProject="${scriptDir}/../api/SecureTodo.Api/SecureTodo.Api.csproj"
 outputFile="${scriptDir}/../api/GeneratedBundles/SecureTodo_Migrations"
 
+dbConnectionString="${CONNECTION_STRING}"
+
+if [[ -z "$dbConnectionString" ]]; then
+    appsettings="$baseDirectory/SecureTodo.Api/appsettings.Development.json"
+    if [ "${ASPNETCORE_ENVIRONMENT}" = "Production" ]; then
+        appsettings="$baseDirectory/SecureTodo.Api/appsettings.json"
+    fi
+    dbConnectionString=$(jq -r '.ConnectionStrings.TodoDb // empty' "$appsettings")
+fi
+
 echo "Starting migration bundle generation process..."
 # Get migration list
 
-migrationsList=$(dotnet ef migrations list --context "$dbContextName" --project "$projectFile" --startup-project "$startupProject" 2>&1)
+migrationsList=$(dotnet ef migrations list --context "$dbContextName" --project "$projectFile" --startup-project "$startupProject" --connection "$dbConnectionString" 2>&1)
 lastExitCode=$?
 
 if [[ $lastExitCode -ne 0 ]]; then
@@ -42,10 +52,22 @@ echo "Generating migration bundle -> Output: $outputFile -> DbContext: $dbContex
 # Build the command
 command=(dotnet ef migrations bundle --output "$outputFile" --context "$dbContextName" --startup-project "$startupProject" --project "$projectFile")
 
-os_type=$(uname -s)
+os_type="$(uname -s)"
+arch="$(uname -m)"
 
-if [[ "$os_type" == "Linux" || "$os_type" == "Darwin" ]]; then
-    command+=(--target-runtime "linux-x64" --self-contained)
+# default: don't force; let dotnet decide when local
+target_runtime=""
+case "${os_type}_${arch}" in
+  Linux_x86_64|Darwin_x86_64)
+    target_runtime="linux-x64"
+    ;;
+  Linux_aarch64|Linux_arm64|Darwin_arm64)
+    target_runtime="linux-arm64"
+    ;;
+esac
+
+if [[ -n "$target_runtime" ]]; then
+    command+=(--target-runtime "$target_runtime" --self-contained)
 fi
 
 "${command[@]}"

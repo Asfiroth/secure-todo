@@ -1,0 +1,5 @@
+IF DB_ID(N'todo-db') IS NULL
+BEGIN
+    CREATE DATABASE [todo-db];
+END
+GO

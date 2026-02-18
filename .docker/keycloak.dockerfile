@@ -1,3 +1,3 @@
 FROM --platform=$BUILDPLATFORM keycloak/keycloak:26.3.4
 
-COPY keycloak/import/*  /opt/keycloak/data/import/
+COPY /import/  /opt/keycloak/data/import/

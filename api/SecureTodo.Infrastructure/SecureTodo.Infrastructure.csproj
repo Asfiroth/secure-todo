@@ -13,7 +13,4 @@
     <ProjectReference Include="..\SecureTodo.Application\SecureTodo.Application.csproj" />
     <ProjectReference Include="..\SecureTodo.Domain\SecureTodo.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-  </ItemGroup>
 </Project>
