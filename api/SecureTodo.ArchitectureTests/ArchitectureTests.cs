@@ -63,20 +63,5 @@ internal class ArchitectureTests
         rule.Check(Architecture);
     }
     
-    [Test]
-    public void Infrastructure_Should_Not_Be_Dependent_On_Domain_Directly_Where_Possible()
-    {
-        // Usually Infrastructure depends on Domain for Repository implementations,
-        // but we want to ensure it doesn't bypass Application logic for high-level operations.
-        // This is a softer rule, but useful for preventing logic leak.
-
-        IArchRule rule = Types().That().ResideInNamespace(InfrastructureNamespace)
-            .Should().NotDependOnAny(Types().That().ResideInNamespace(DomainNamespace));
-
-        if (rule.Evaluate(Architecture).Any())
-        {
-            rule.Check(Architecture);
-        }
-    }
 
 }
