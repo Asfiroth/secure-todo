@@ -136,6 +136,8 @@ The Keycloak realm `todo` is automatically imported with:
 - Client: `todo-app` (React SPA)
 - Test User: `testuser` / `password123`
 
+> NOTE: To test the web application, use the test user credentials.
+
 ### Running Locally (without Docker)
 
 For local development, the API and frontend run directly on the host.
@@ -194,6 +196,9 @@ cd app
 npm install
 npm run dev
 ```
+
+The Web APP will be available at:
+- HTTP: http://localhost:5173
 
 ## Development Workflows
 
