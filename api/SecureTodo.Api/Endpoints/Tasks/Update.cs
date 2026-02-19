@@ -1,11 +1,10 @@
 using Ardalis.Result.AspNetCore;
 using Mediator;
+using SecureTodo.Api.Constants;
+using SecureTodo.Api.Endpoints.Tasks.Payloads;
 using SecureTodo.Application.UseCases.Tasks.Update;
-using SecureTodo.Domain.Task.Enums;
 
 namespace SecureTodo.Api.Endpoints.Tasks;
-
-public record UpdateTaskRequest(string Title, string? Description, TaskPriority Priority, DateOnly DueDate);
 
 public sealed class Update : IEndpoint
 {

@@ -5,7 +5,7 @@ using SecureTodo.Application.QueryServices;
 
 namespace SecureTodo.Application.UseCases.Tasks.List;
 
-public class ListTasksQueryHandler : IQueryHandler<ListTasksQuery, Result<PagedList<TaskItemDto>>>
+public sealed class ListTasksQueryHandler : IQueryHandler<ListTasksQuery, Result<PagedList<TaskItemDto>>>
 {
     private readonly ILogger<ListTasksQueryHandler> _logger;
     private readonly ITaskItemQueryService _taskItemQueryService;

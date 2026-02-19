@@ -1,18 +1,14 @@
 using Ardalis.Result.AspNetCore;
 using Mediator;
+using SecureTodo.Api.Constants;
+using SecureTodo.Api.Endpoints.Tasks.Payloads;
 using SecureTodo.Application.Services;
 using SecureTodo.Application.UseCases.Tasks.List;
 using SecureTodo.Domain.Task.Enums;
 
 namespace SecureTodo.Api.Endpoints.Tasks;
 
-public sealed record ListTasksRequest(
-    string? SearchTerm,
-    bool IsCompleted,
-    int PageSize = 10,
-    string Cursor = "");
-
-public class List : IEndpoint
+public sealed class List : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder builder)
     {

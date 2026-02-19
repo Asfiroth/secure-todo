@@ -7,6 +7,9 @@ public class UpdateTaskValidator : AbstractValidator<UpdateTaskCommand>
 {
     public UpdateTaskValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
+        
         RuleFor(x => x.Title)
             .NotEmpty()
             .MaximumLength(120);

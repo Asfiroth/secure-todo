@@ -1,4 +1,4 @@
-namespace SecureTodo.Api.Endpoints;
+namespace SecureTodo.Api.Constants;
 
 public static class RouteNames
 {

@@ -1,11 +1,10 @@
 using Ardalis.Result.AspNetCore;
 using Mediator;
+using SecureTodo.Api.Constants;
+using SecureTodo.Api.Endpoints.Tasks.Payloads;
 using SecureTodo.Application.UseCases.Tasks.Create;
-using SecureTodo.Domain.Task.Enums;
 
 namespace SecureTodo.Api.Endpoints.Tasks;
-
-public record CreateTaskRequest(string Title, string? Description, TaskPriority Priority, DateOnly DueDate);
 
 public sealed class Create : IEndpoint
 {

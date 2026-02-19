@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using SecureTodo.Api.ExceptionHandlers;
 using SecureTodo.Api.Extensions;
 using SecureTodo.Api.Services;
 using SecureTodo.Application.Extensions;
@@ -23,8 +24,8 @@ try
 
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddOpenApi();
-    
-
+    builder.Services.AddProblemDetails();
+    builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
     // Cross cutting services.
     builder.Services.AddTransient<IAuthService, AuthService>();
     builder.Services.AddMediator(options => 
@@ -77,8 +78,9 @@ try
             });
     });
     
-
     var app = builder.Build();
+    app.UseExceptionHandler();
+    
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();

@@ -4,7 +4,7 @@ using SecureTodo.Domain.Task.Enums;
 
 namespace SecureTodo.Application.UseCases.Tasks.Update;
 
-public record UpdateTaskCommand(
+public sealed record UpdateTaskCommand(
     Guid Id,
     string Title,
     string? Description,
