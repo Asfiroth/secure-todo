@@ -1,11 +1,11 @@
 @reference "../../../../app.css";
 
 .create-todo-btn {
-  @apply cursor-pointer rounded-lg bg-blue-600 px-4 py-2 align-bottom font-bold text-white hover:bg-blue-700;
+  @apply flex flex-row cursor-pointer rounded-lg bg-blue-600 px-4 py-2 align-bottom font-bold text-white hover:bg-blue-700;
 }
 
 .todo-content {
-  @apply flex w-md flex-1 flex-col gap-2.5;
+  @apply flex w-56 md:w-md flex-1 flex-col gap-2.5;
 
   .priority-high {
     @apply text-sm font-medium text-red-500;

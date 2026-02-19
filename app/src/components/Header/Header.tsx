@@ -11,7 +11,7 @@ export const Header = () => {
         <span>Welcome, {user?.name}</span>
       </div>
       <button className="logout" onClick={() => logout()}>
-        Logout
+        <span>Logout</span>
         <ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
       </button>
     </>

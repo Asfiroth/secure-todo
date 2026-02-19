@@ -8,5 +8,5 @@
 }
 
 .page-content {
-  @apply w-full flex-1 overflow-x-auto overflow-y-auto py-6 pr-6;
+  @apply w-full flex-1 overflow-x-auto overflow-y-auto py-6;
 }

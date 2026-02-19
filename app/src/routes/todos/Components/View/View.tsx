@@ -8,6 +8,7 @@ import './View.css';
 import { SegmentedControl } from '~/components/SegmentedControl';
 import { TextField } from '~/components/TextField';
 import { debounce } from 'lodash';
+import {PlusIcon} from "@heroicons/react/20/solid";
 
 const View = () => {
   const { getMyTodos } = useTodo();
@@ -73,7 +74,7 @@ const View = () => {
           onChange={handleInputChange}
         />
         <button onClick={() => setIsFormOpen(true)} className="create-todo-btn">
-          Add New Task
+          <PlusIcon className="h-6 w-6" />
         </button>
       </div>
       <SegmentedControl

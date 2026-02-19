@@ -10,4 +10,9 @@
 
 .logout {
   @apply mt-3 mr-4 flex cursor-pointer flex-row gap-2 rounded-lg bg-blue-950 px-4 py-1.5 align-middle;
+
+  span {
+    @apply hidden md:block;
+  }
+
 }
