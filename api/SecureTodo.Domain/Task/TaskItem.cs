@@ -52,7 +52,13 @@ public sealed class TaskItem : Auditable
     
     public void UpdatePriority(TaskPriority priority) => Priority = priority;
     
-    public void UpdateDueDate(DateOnly dueDate) => DueDate = dueDate;
+    public void UpdateDueDate(DateOnly dueDate)
+    {
+        if (dueDate < DateOnly.FromDateTime(DateTime.UtcNow))
+            throw new ArgumentException("Due date cannot be in the past.", nameof(dueDate));
+        
+        DueDate = dueDate;
+    }
 
     public static class Factory
     {

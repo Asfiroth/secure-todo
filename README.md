@@ -14,7 +14,7 @@ This example showcases a simple yet secure application built with .NET 10 and Re
 ### Frontend (App)
 
 - **React 19.2.0** - UI library
-- **React Router 7.13.0** - File-based routing framework (SSR disabled, client-only SPA)
+- **React Router 7.13.0** - Route-config based routing with nested layouts (SSR disabled, client-only SPA)
 - **TypeScript 5.9.3** - Type-safe JavaScript (strict mode)
 - **Vite 7.3.1** - Build tool and dev server
 - **Tailwind CSS 4.1.18** - Utility-first CSS framework
@@ -138,7 +138,42 @@ The Keycloak realm `todo` is automatically imported with:
 
 ### Running Locally (without Docker)
 
-For local development, the API and frontend run directly on the host. Configure `app/.env` to point at your local Keycloak and API instances.
+For local development, the API and frontend run directly on the host.
+
+#### Local Configuration Files
+
+The following files are required for local development and are intentionally ignored by git:
+
+- `app/.env`
+- `api/SecureTodo.Api/appsettings.Development.json`
+
+Create them locally with values matching your environment.
+
+**Frontend: `app/.env`**
+
+```env
+VITE_TODO_API=http://localhost:5208
+VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_KEYCLOAK_REALM=todo
+VITE_KEYCLOAK_CLIENT_ID=todo-app
+```
+
+**Backend: `api/SecureTodo.Api/appsettings.Development.json`**
+
+```json
+{
+  "ConnectionStrings": {
+    "TodoDb": "Server=localhost,1433;Database=todo-db;User ID=sa;Password=<your-password>;TrustServerCertificate=True;Encrypt=True;"
+  },
+  "Identity": {
+    "Authority": "http://localhost:8080/realms/todo",
+    "Issuer": "http://localhost:8080/realms/todo",
+    "Audiences": "account"
+  },
+  "CrossOrigins": "http://localhost:5173"
+}
+```
+> NOTE: keep real credentials only in local files or a secret manager. Do not commit secrets.
 
 #### Running the API
 
@@ -160,30 +195,22 @@ npm install
 npm run dev
 ```
 
-#### Running Architecture Tests
-
-```bash
-cd api
-dotnet test
-```
-
-## Development
+## Development Workflows
 
 ### Frontend
 
-- `npm run dev` - Start development server with hot reload
 - `npm run build` - Build for production
 - `npm run lint` - Run ESLint with auto-fix
 - `npm run lint:format` - Format code with Prettier
 
 ### Backend
 
-The API follows Clean Architecture principles:
+#### Architecture Tests
 
-- **Domain Layer**: Core business entities, value objects, and enums (no external dependencies)
-- **Application Layer**: Use cases (CQRS handlers), validators, service interfaces
-- **Infrastructure Layer**: EF Core DbContext, repositories, query services, interceptors
-- **API Layer**: Minimal API endpoints, authentication service, DI configuration
+```bash
+cd api
+dotnet test
+```
 
 ### Database Migrations
 
@@ -200,12 +227,23 @@ The API follows Clean Architecture principles:
 
 ## Architecture Patterns
 
+### Backend
+
 - **Clean Architecture** - Dependency inversion and separation of concerns
 - **CQRS** - Command Query Responsibility Segregation via source-generated Mediator
 - **Result Pattern** - Explicit success/failure handling with Ardalis.Result
 - **Repository Pattern** - Data access abstraction (write-side)
 - **Query Service Pattern** - Data access for read operations
 - **Strongly-Typed IDs** - Domain entity IDs as value objects
+
+### Frontend
+
+- **Route-Based Layout Composition** - Separate guest and authorized app shells via React Router layouts
+- **Authentication Boundary Pattern** - Session state and auth actions centralized in `AuthProvider` + `ProtectedRoute`
+- **Custom Hook Service Pattern** - Domain-specific operations encapsulated in `useAuth` and `useTodo`
+- **HTTP Client Abstraction** - Shared Axios client with auth token injection and 401 token refresh retry
+- **Component Composition Pattern** - Reusable UI primitives composed into route views and feature components
+- **Type-Driven UI Contracts** - Shared TypeScript models for auth and todo data across hooks and components
 
 ## Authentication & Authorization
 

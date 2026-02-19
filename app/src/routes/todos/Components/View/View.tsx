@@ -8,7 +8,7 @@ import './View.css';
 import { SegmentedControl } from '~/components/SegmentedControl';
 import { TextField } from '~/components/TextField';
 import { debounce } from 'lodash';
-import {PlusIcon} from "@heroicons/react/20/solid";
+import { PlusIcon } from '@heroicons/react/20/solid';
 
 const View = () => {
   const { getMyTodos } = useTodo();

@@ -24,7 +24,7 @@ public sealed class CreateTaskCommandHandler : ICommandHandler<CreateTaskCommand
         await _taskItemRepository.AddAsync(newTask, cancellationToken);
         _logger.LogInformation("Task Created");
         
-        var mapped = new CreateTaskResult(
+        var result = new CreateTaskResult(
             newTask.Id.Value, 
             newTask.Title, 
             newTask.Description, 
@@ -32,6 +32,6 @@ public sealed class CreateTaskCommandHandler : ICommandHandler<CreateTaskCommand
             newTask.DueDate
             );
         
-        return Result<CreateTaskResult>.Success(mapped);
+        return Result<CreateTaskResult>.Success(result);
     }
 }
