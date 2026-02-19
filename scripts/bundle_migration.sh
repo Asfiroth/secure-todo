@@ -20,8 +20,8 @@ if [[ -z "$dbConnectionString" ]]; then
 fi
 
 echo "Starting migration bundle generation process..."
-# Get migration list
 
+# Get migration list
 migrationsList=$(dotnet ef migrations list --context "$dbContextName" --project "$projectFile" --startup-project "$startupProject" --connection "$dbConnectionString" 2>&1)
 lastExitCode=$?
 
@@ -30,7 +30,7 @@ if [[ $lastExitCode -ne 0 ]]; then
     exit 1
 fi
 
-# Find latest pending migrations (lines matching 14 digits + _ + name + (Pending))
+# Find if there's pending migrations (lines matching 14 digits + _ + name + (Pending))
 latestPendingMigrations=$(echo "$migrationsList" | grep -E "^[0-9]{14}_.+\s+\(Pending\)")
 
 echo "Migrations list :"
@@ -40,12 +40,9 @@ echo "$latestPendingMigrations"
 latestPendingMigration=$(echo "$latestPendingMigrations" | tail -n 1)
 
 if [[ -z "$latestPendingMigration" ]]; then
-    echo "No migrations found for context: $dbContextName"
+    echo "No pending migrations found for context: $dbContextName"
     exit 0
 fi
-
-# Extract the migration name (remove trailing " (Pending)")
-latestPendingMigration=$(echo "$latestPendingMigration" | sed 's/ \+(Pending)//')
 
 echo "Generating migration bundle -> Output: $outputFile -> DbContext: $dbContextName"
 

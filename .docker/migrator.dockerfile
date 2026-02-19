@@ -2,12 +2,12 @@
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build
 ARG TARGETARCH
 
-# tools your scripts need (execute_bundle.sh uses jq)
+# tools scripts need 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends jq ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-# Install EF CLI tool (your scripts call `dotnet ef`)
+# Install EF CLI tool
 ENV DOTNET_TOOLS=/root/.dotnet/tools
 ENV PATH="${PATH}:${DOTNET_TOOLS}"
 RUN dotnet tool install --global dotnet-ef

@@ -1,6 +1,6 @@
-# Secure Todo
+# Secure Task Manager
 
-A modern, secure todo application built with .NET 10 and React 19, following Clean Architecture principles.
+This example showcases a simple yet secure application built with .NET 10 and React 19, following Clean Architecture principles.
 
 ## Tech Stack
 
@@ -11,16 +11,6 @@ A modern, secure todo application built with .NET 10 and React 19, following Cle
 - **ASP.NET Core** - Web API framework
 - **Clean Architecture** - Separation of concerns with Domain, Application, Infrastructure, and API layers
 
-#### Key Libraries
-
-- **Entity Framework Core 10.0.3** - ORM with SQL Server provider
-- **Mediator 3.0.1** - Source-generated CQRS pattern implementation
-- **FluentValidation 12.1.1** - Request validation
-- **Ardalis.Result 10.1.0** - Result pattern for API responses
-- **Serilog 10.0.0** - Structured logging with enrichers (ClientInfo, Environment, Thread)
-- **Scalar 2.12.41** - API documentation (available at `/docs` in development)
-- **JWT Bearer Authentication** - Token-based auth via Keycloak OIDC
-
 ### Frontend (App)
 
 - **React 19.2.0** - UI library
@@ -28,31 +18,6 @@ A modern, secure todo application built with .NET 10 and React 19, following Cle
 - **TypeScript 5.9.3** - Type-safe JavaScript (strict mode)
 - **Vite 7.3.1** - Build tool and dev server
 - **Tailwind CSS 4.1.18** - Utility-first CSS framework
-
-#### Key Libraries
-
-- **Axios 1.13.5** - HTTP client for API communication
-- **Keycloak JS 26.2.3** - Keycloak JavaScript adapter for OIDC authentication
-- **React Hook Form 7.71.1** - Form state management and validation
-- **React Hot Toast 2.6.0** - Toast notifications
-- **Heroicons 2.2.0** - SVG icon library
-- **Lodash 4.17.23** - Utility functions
-
-#### UI Components
-
-Reusable component library with dedicated CSS files using Tailwind `@apply`:
-
-- **Card** - Content container
-- **Header** - Page header
-- **Label** - Form labels
-- **Loader** - Loading indicator with bubble animation
-- **Modal** - Accessible dialog with keyboard support and backdrop
-- **SegmentedControl** - Toggle/filter control
-- **SelectField** - Dropdown select input
-- **TextAreaField** - Multi-line text input
-- **TextField** - Single-line text input
-- **TextError** - Validation error display
-- **TodoFormModal** - Todo creation/editing modal form
 
 ### Database
 
@@ -75,7 +40,7 @@ Reusable component library with dedicated CSS files using Tailwind `@apply`:
 - **Prettier 3** - Code formatting (with Tailwind plugin)
 - **EF Core Migrations** - Database schema management via shell scripts
 - **Architecture Tests** - ArchUnitNET + TUnit for enforcing Clean Architecture constraints
-- **Target OS**: Linux (ARM64)
+- **Target OS**: Linux
 
 ## Project Structure
 

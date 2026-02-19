@@ -16,6 +16,7 @@ if [[ -z "$dbConnectionString" ]]; then
     dbConnectionString=$(jq -r '.ConnectionStrings.TodoDb // empty' "$appsettings")
 fi
 
+# Check if there are any migration bundles to execute
 mapfile -t bundleFiles < <(find "$bundleFolder" -maxdepth 1 -type f -name "*_Migrations*")
 
 if [ ${#bundleFiles[@]} -eq 0 ]; then
@@ -26,6 +27,7 @@ fi
 for bundlePath in "${bundleFiles[@]}"; do
     if [ ! -e "$bundlePath" ]; then
         echo "Migration bundle not found: $bundlePath"
+        continue
     fi
 
     echo "Executing migration bundle: $bundlePath with connection string"
@@ -36,6 +38,7 @@ for bundlePath in "${bundleFiles[@]}"; do
         echo "Executed successfully: $(basename "$bundlePath")"
     else
         echo "Error executing $(basename "$bundlePath")"
+        exit 1
     fi
 done
 

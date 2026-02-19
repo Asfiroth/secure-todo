@@ -3,7 +3,6 @@ services:
     image: mcr.microsoft.com/mssql/server:2025-latest
     container_name: sqlserver
     restart: always
-    platform: linux/amd64
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: P@ssw0rd123

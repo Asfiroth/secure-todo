@@ -28,8 +28,4 @@ internal class ApiLayerTests : BaseTest
         
         rule.Check(Architecture);
     }
-    
-    /*
-    
-   */
 }
