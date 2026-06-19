@@ -23,9 +23,9 @@ public sealed class AuthService: IAuthService
         
         _logger.LogInformation("Attempting to retrieve user id from context");
         
-        var employeeId = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (!Guid.TryParse(employeeId, out var parsedUserId)) return null;
+        if (!Guid.TryParse(userId, out var parsedUserId)) return null;
         
         _userId = parsedUserId;
         return parsedUserId;
