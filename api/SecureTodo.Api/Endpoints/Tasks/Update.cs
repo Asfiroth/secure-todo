@@ -12,7 +12,8 @@ public sealed class Update : IEndpoint
     {
         builder
             .MapPut(RouteNames.Tasks.Update, HandleAsync)
-            .WithTags(RouteNames.Tasks.Tag);
+            .WithTags(RouteNames.Tasks.Tag)
+            .RequireAuthorization();
     }
     
     private async Task<IResult> HandleAsync(Guid id, UpdateTaskRequest request, IMediator mediator, CancellationToken cancellationToken)

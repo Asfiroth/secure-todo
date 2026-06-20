@@ -14,7 +14,8 @@ public sealed class List : IEndpoint
     {
         builder
             .MapGet(RouteNames.Tasks.GetAll, HandleAsync)
-            .WithTags(RouteNames.Tasks.Tag);
+            .WithTags(RouteNames.Tasks.Tag)
+            .RequireAuthorization();
     }
     
     private async Task<IResult> HandleAsync([AsParameters]ListTasksRequest request, IMediator mediator, IAuthService authService, CancellationToken cancellationToken)

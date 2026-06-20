@@ -3,7 +3,7 @@ set -e
 set -euo pipefail
 
 scriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
+baseDirectory="$(cd "${scriptDir}/.." && pwd)"
 projectFile="${scriptDir}/../api/SecureTodo.Infrastructure/SecureTodo.Infrastructure.csproj"
 dbContextName="SecureTodoDbContext"
 startupProject="${scriptDir}/../api/SecureTodo.Api/SecureTodo.Api.csproj"

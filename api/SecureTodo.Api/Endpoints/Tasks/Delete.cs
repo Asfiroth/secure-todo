@@ -11,7 +11,8 @@ public sealed class Delete : IEndpoint
     {
         builder
             .MapDelete(RouteNames.Tasks.Delete, HandleAsync)
-            .WithTags(RouteNames.Tasks.Tag);
+            .WithTags(RouteNames.Tasks.Tag)
+            .RequireAuthorization();
     }
     
     private async Task<IResult> HandleAsync(Guid id, IMediator mediator, CancellationToken cancellationToken)
@@ -20,7 +21,7 @@ public sealed class Delete : IEndpoint
 
         if (result.IsSuccess)
         {
-            return Results.Ok();
+            return TypedResults.NoContent();
         }
 
         return result.ToMinimalApiResult();

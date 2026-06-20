@@ -12,7 +12,8 @@ public sealed class GetById : IEndpoint
         builder
             .MapGet(RouteNames.Tasks.GetById, HandleAsync)
             .WithTags(RouteNames.Tasks.Tag)
-            .WithName(nameof(GetById));
+            .WithName(nameof(GetById))
+            .RequireAuthorization();
     }
 
     private async Task<IResult> HandleAsync(Guid id, IMediator mediator, CancellationToken cancellationToken)

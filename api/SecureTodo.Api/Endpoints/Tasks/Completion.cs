@@ -11,11 +11,13 @@ public sealed class Completion : IEndpoint
     {
         builder
             .MapPost(RouteNames.Tasks.Completion, HandleCompletionAsync)
-            .WithTags(RouteNames.Tasks.Tag);
+            .WithTags(RouteNames.Tasks.Tag)
+            .RequireAuthorization();
         
         builder
             .MapDelete(RouteNames.Tasks.Completion, HandleIncompletionAsync)
-            .WithTags(RouteNames.Tasks.Tag);
+            .WithTags(RouteNames.Tasks.Tag)
+            .RequireAuthorization();
     }
     
     private async Task<IResult> HandleCompletionAsync(Guid id, IMediator mediator, CancellationToken cancellationToken)
@@ -36,7 +38,7 @@ public sealed class Completion : IEndpoint
 
         if (result.IsSuccess)
         {
-            return TypedResults.Ok();
+            return TypedResults.NoContent();
         }
 
         return result.ToMinimalApiResult();
