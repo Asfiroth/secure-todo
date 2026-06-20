@@ -12,7 +12,8 @@ public sealed class Create : IEndpoint
     {
         builder
             .MapPost(RouteNames.Tasks.Create, HandleAsync)
-            .WithTags(RouteNames.Tasks.Tag);
+            .WithTags(RouteNames.Tasks.Tag)
+            .RequireAuthorization();
     }
     
     private async Task<IResult> HandleAsync(CreateTaskRequest request, IMediator mediator, CancellationToken cancellationToken)
