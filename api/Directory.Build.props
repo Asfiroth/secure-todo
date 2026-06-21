@@ -8,5 +8,6 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
+        <NuGetAuditMode>direct</NuGetAuditMode>
     </PropertyGroup>
 </Project>
